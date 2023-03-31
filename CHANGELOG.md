@@ -1,3 +1,5 @@
+# Changelog
+
 ## 0.0.1
 
-* TODO: Describe initial release.
+* Added `getDeviceCornerRadius()` method to get the corner radius of the device.

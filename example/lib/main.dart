@@ -1,63 +1,95 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
 import 'package:flutter/services.dart';
 import 'package:device_corner_radius/device_corner_radius.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const App());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  final _deviceCornerRadiusPlugin = DeviceCornerRadius();
-
-  @override
-  void initState() {
-    super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _deviceCornerRadiusPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
-  }
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          brightness: Brightness.light,
+          seedColor: Colors.deepPurple,
+        )
+      ),
+      home: const HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  BorderRadius radius = BorderRadius.circular(20);
+
+  double padding = 20;
+
+  @override
+  void initState() {
+    super.initState();
+    getBorderRadius();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        margin: const EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: radius - BorderRadius.circular(15),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.primary,
+            width: 3,
+          ),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Device Corner Radius',
+                style: Theme.of(context).textTheme.headlineLarge,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'This is a sample app that shows how to use the device_corner_radius plugin to get the corner radius of the device.',
+                style: Theme.of(context).textTheme.bodyLarge,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  void getBorderRadius() async {
+    try {
+      final result = await DeviceCornerRadius.getCornerRadius();
+      setState(() {
+        radius = result;
+      });
+    } on PlatformException catch (_) {
+      // Failed to get radius
+    }
+  }
+
 }

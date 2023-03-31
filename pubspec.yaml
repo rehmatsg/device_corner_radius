@@ -1,7 +1,10 @@
 name: device_corner_radius
-description: A new Flutter plugin project.
+description: A new Flutter plugin to get the corner radius of the device.
 version: 0.0.1
-homepage:
+homepage: https://devflowstudio.com
+repository: https://github.com/rehmatsg/device_corner_radius
+issue_tracker: https://github.com/rehmatsg/device_corner_radius/issues
+documentation: https://github.com/rehmatsg/device_corner_radius/
 
 environment:
   sdk: '>=2.19.2 <3.0.0'
