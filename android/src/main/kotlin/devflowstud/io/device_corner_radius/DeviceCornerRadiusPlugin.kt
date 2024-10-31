@@ -51,23 +51,33 @@ class DeviceCornerRadiusPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
 
   private fun getCornerRadius(view: View): Map<String, Any> {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      val insets = view.rootWindowInsets
-      val topLeft = insets?.getRoundedCorner(RoundedCorner.POSITION_TOP_LEFT)?.radius ?: 0f
-      val topRight = insets?.getRoundedCorner(RoundedCorner.POSITION_TOP_RIGHT)?.radius ?: 0f
-      val bottomLeft = insets?.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT)?.radius ?: 0f
-      val bottomRight = insets?.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_RIGHT)?.radius ?: 0f
-      mapOf(
-        "topLeft" to topLeft,
-        "topRight" to topRight,
-        "bottomLeft" to bottomLeft,
-        "bottomRight" to bottomRight
-      )
+      val density = this.activity.resources.displayMetrics.density.toDouble()
+      if (density == 0.0) {
+        mapOf(
+          "topLeft" to 0.0,
+          "topRight" to 0.0,
+          "bottomLeft" to 0.0,
+          "bottomRight" to 0.0
+        )
+      } else {
+        val insets = view.rootWindowInsets
+        val topLeft = (insets?.getRoundedCorner(RoundedCorner.POSITION_TOP_LEFT)?.radius ?: 0f).toDouble()
+        val topRight = (insets?.getRoundedCorner(RoundedCorner.POSITION_TOP_RIGHT)?.radius ?: 0f).toDouble()
+        val bottomLeft = (insets?.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT)?.radius ?: 0f).toDouble()
+        val bottomRight = (insets?.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_RIGHT)?.radius ?: 0f).toDouble()
+        mapOf(
+          "topLeft" to topLeft / density,
+          "topRight" to topRight / density,
+          "bottomLeft" to bottomLeft / density,
+          "bottomRight" to bottomRight / density
+        )
+      }
     } else {
       mapOf(
-        "topLeft" to 0,
-        "topRight" to 0,
-        "bottomLeft" to 0,
-        "bottomRight" to 0
+        "topLeft" to 0.0,
+        "topRight" to 0.0,
+        "bottomLeft" to 0.0,
+        "bottomRight" to 0.0
       )
     }
   }
